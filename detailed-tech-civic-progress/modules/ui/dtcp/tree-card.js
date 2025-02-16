@@ -13,7 +13,6 @@ export class DTCP_TreeCardDecorator {
     }
 
     beforeAttach() {
-        console.warn("HZ beforeAttach: ");
         this.observer.observe(this.componentRoot, this.observerConfig);
     }
 

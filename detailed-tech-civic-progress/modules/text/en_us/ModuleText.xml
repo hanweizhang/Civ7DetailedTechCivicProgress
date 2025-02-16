@@ -5,7 +5,7 @@
             <Text>Detailed Tech Civic Progress</Text>
         </Row>
         <Row Tag="LOC_MOD_DETAILED_TECH_CIVIC_PROGRESS_DESCRIPTION">
-            <Text>Show the detailed tech and civic progress/cost in cards and tooltips.</Text>
+            <Text>Show detailed tech and civic progress/cost in cards and tooltips.</Text>
         </Row>
     </EnglishText>
 </Database>
