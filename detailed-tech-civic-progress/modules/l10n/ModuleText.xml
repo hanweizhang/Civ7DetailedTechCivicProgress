@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database>
+  <LocalizedText>
+    <Replace Tag="LOC_MOD_DETAILED_TECH_CIVIC_PROGRESS_NAME" Language="zh_Hans_CN">
+      <Text>详细科技市政进度</Text>
+    </Replace>
+    <Replace Tag="LOC_MOD_DETAILED_TECH_CIVIC_PROGRESS_DESCRIPTION" Language="zh_Hans_CN">
+      <Text>显示科技和市政的详细进度和花费。</Text>
+    </Replace>
+  </LocalizedText>
+</Database>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="detailed-tech-civic-progress" version="1" xmlns="ModInfo">
+    <Properties>
+        <Name>LOC_MOD_DETAILED_TECH_CIVIC_PROGRESS_NAME</Name>
+        <Description>LOC_MOD_DETAILED_TECH_CIVIC_PROGRESS_DESCRIPTION</Description>
+        <Authors>wltk</Authors>
+        <Package>Mod</Package>
+        <AffectsSavedGames>0</AffectsSavedGames>
+    </Properties>
+    <Dependencies>
+        <Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME" />
+    </Dependencies>
+    <ActionCriteria>
+        <Criteria id="always">
+            <AlwaysMet></AlwaysMet>
+        </Criteria>
+    </ActionCriteria>
+    <ActionGroups>
+        <ActionGroup id="game-detailed-tech-civic-progress" scope="game" criteria="always">
+            <Actions>
+                <ImportFiles>
+                    <Item>ui/utilities/utilities-tech-civic-progress.js</Item>
+                </ImportFiles>
+                <UIScripts>
+                    <Item>ui/dtcp/tree-card.js</Item>
+                    <Item>ui/dtcp/tree-chooser-item.js</Item>
+                    <Item>ui/tooltips/tech-civic-tooltip.js</Item>
+                </UIScripts>
+                <UpdateText>
+                    <Item>text/en_us/ModuleText.xml</Item>
+                    <Item locale="zh_Hans_CN">l10n/ModuleText.xml</Item>
+                </UpdateText>
+            </Actions>
+        </ActionGroup>
+    </ActionGroups>
+    <LocalizedText>
+        <File>text/en_us/ModuleText.xml</File>
+        <File>l10n/ModuleText.xml</File>
+    </LocalizedText>
+</Mod>
