@@ -14,6 +14,30 @@ function getTreeNodeSystemType(nodeType) {
     return "UNKNOWN";
 }
 
+// Helper method to get the current main to mastery cost ratio.
+function getMainToMasteryRatio(systemType) {
+    // TODO: Currently hardcoding the value, should be revisited after Firaxis provides APIs for getting active modifiers. i.e. through GameEffects.
+    let scalar = 33; // Base scalar
+    // Assume science attribute only has science efficiency for now, same for culture.
+    const treeType = systemType == "SYSTEM_CULTURE" ? "TREE_ATTRIBUTE_CULTURAL" : "TREE_ATTRIBUTE_SCIENTIFIC";
+    // Check if attributes are activated in science and culture tree.
+    const tree = Game.ProgressionTrees.getTree(GameContext.localPlayerID, treeType);
+    for (let node of tree.nodes) {
+        // locked - ProgressionTreeNodeState.NODE_STATE_CLOSED => 1
+        // selectable - ProgressionTreeNodeState.NODE_STATE_OPEN => 2
+        // selected -  ProgressionTreeNodeState.NODE_STATE_FULLY_UNLOCKED => 5
+        if (node.state == ProgressionTreeNodeState.NODE_STATE_FULLY_UNLOCKED) {
+            // Hacky solution right now
+            const efficiencyNodes = ["NODE_ATTRIBUTE_CULTURAL_03", "NODE_ATTRIBUTE_SCIENTIFIC_03"];
+            const nodeInfo = GameInfo.ProgressionTreeNodes.lookup(node.nodeType);
+            if (nodeInfo && efficiencyNodes.includes(nodeInfo.ProgressionTreeNodeType)) {
+                scalar += 25;
+            }
+        }
+    }
+    return 100 / (100 + scalar);
+}
+
 /**
  * Return a progress/cost string for a given tech or civic tree node.
  * @param unifiedNode A unified tree node, containing following fields.
@@ -45,7 +69,7 @@ export function getProgressCostStr(unifiedNode) {
     if (unifiedNode.unlocksByDepth && unifiedNode.unlocksByDepth.length <= 0) {
         return;
     }
-    const mainToMasteryRatio = 0.75;
+    const mainToMasteryRatio = getMainToMasteryRatio(systemType);
     const mainDepth = unifiedNode.unlocksByDepth[0];
     let costValue = 0;
     let progressValue = 0;
@@ -58,13 +82,13 @@ export function getProgressCostStr(unifiedNode) {
             progressValue = masteryDepth.isCompleted ? costValue : masteryDepth.isLocked ? 0 : progress;
         } else {
             // baseCost is mastery's cost after completion, use the ratio to calculate main's cost.
-            costValue = Math.round(baseCost / mainToMasteryRatio);
+            costValue = Math.ceil(baseCost / mainToMasteryRatio);
             progressValue = costValue;
         }
     } else {
         if (unifiedNode.isMastery) {
             // Main node is not completed, the baseCost is main's cost, use the ratio to calculate mastery's cost.
-            costValue = Math.round(baseCost * mainToMasteryRatio);
+            costValue = Math.floor(baseCost * mainToMasteryRatio);
             const masteryDepth = unifiedNode.unlocksByDepth[1];
             const progress = (unifiedNode.progress != null) ? unifiedNode.progress : Math.round(costValue * unifiedNode.progressPercentage / 100);
             progressValue = masteryDepth.isCompleted ? costValue : masteryDepth.isLocked ? 0 : progress;

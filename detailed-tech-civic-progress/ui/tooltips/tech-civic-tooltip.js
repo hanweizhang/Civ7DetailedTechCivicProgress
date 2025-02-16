@@ -12,7 +12,7 @@ import TechTree from '/base-standard/ui/tech-tree/model-tech-tree.js';
 import { RecursiveGetAttribute } from '/core/ui/utilities/utilities-dom.js';
 import { AdvisorUtilities } from '/base-standard/ui/tutorial/tutorial-support.js';
 // wltk START
-import { getProgressCostDiv } from '../utilities/utilities-tech-civic-progress.js';
+import { getProgressCostDiv } from '../utilities/dtcp-utilities-tech-civic-progress.js';
 // wltk END
 class TechCivicTooltipType {
     constructor(model) {

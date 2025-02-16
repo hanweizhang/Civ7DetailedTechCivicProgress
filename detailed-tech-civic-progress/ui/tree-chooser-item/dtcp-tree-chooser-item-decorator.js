@@ -1,6 +1,6 @@
 // Hook up to original tree-chooser-item component. Inspired by @craimasjien.
 
-import { getProgressCostDiv } from '../utilities/utilities-tech-civic-progress.js';
+import { getProgressCostDiv } from '../utilities/dtcp-utilities-tech-civic-progress.js';
 
 export class DTCP_TreeChooserItemDecorator {
 
