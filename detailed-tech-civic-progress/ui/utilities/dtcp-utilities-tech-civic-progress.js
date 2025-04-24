@@ -91,7 +91,7 @@ export function getProgressCostStr(unifiedNode) {
             costValue = Math.floor(baseCost * mainToMasteryRatio);
             const masteryDepth = unifiedNode.unlocksByDepth[1];
             const progress = (unifiedNode.progress != null) ? unifiedNode.progress : Math.round(costValue * unifiedNode.progressPercentage / 100);
-            progressValue = masteryDepth.isCompleted ? costValue : masteryDepth.isLocked ? 0 : progress;
+            progressValue = masteryDepth?.isCompleted ? costValue : masteryDepth?.isLocked ? 0 : progress;
         } else {
             costValue = baseCost;
             const progress = (unifiedNode.progress != null) ? unifiedNode.progress : Math.round(costValue * unifiedNode.progressPercentage / 100);

@@ -18,13 +18,11 @@
     <ActionGroups>
         <ActionGroup id="game-detailed-tech-civic-progress" scope="game" criteria="always">
             <Actions>
-                <ImportFiles>
-                    <Item>ui/utilities/dtcp-utilities-tech-civic-progress.js</Item>
-                </ImportFiles>
                 <UIScripts>
                     <Item>ui/tooltips/tech-civic-tooltip.js</Item>
                     <Item>ui/tree-chooser-item/dtcp-tree-chooser-item-decorator.js</Item>
                     <Item>ui/tree-grid/dtcp-tree-card-decorator.js</Item>
+                    <Item>ui/utilities/dtcp-utilities-tech-civic-progress.js</Item>
                 </UIScripts>
                 <UpdateText>
                     <Item>text/en_us/ModuleText.xml</Item>
