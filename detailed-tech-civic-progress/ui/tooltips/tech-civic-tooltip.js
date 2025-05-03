@@ -1,6 +1,6 @@
 /**
  * Tech-Civic Tooltip
- * @copyright 2024, Firaxis Gmaes
+ * @copyright 2024-2025, Firaxis Gmaes
  * @description The tooltip for tech/civics information.
  */
 import TooltipManager from '/core/ui/tooltips/tooltip-manager.js';
@@ -14,6 +14,27 @@ import { AdvisorUtilities } from '/base-standard/ui/tutorial/tutorial-support.js
 // wltk START
 import { getProgressCostDiv } from '../utilities/dtcp-utilities-tech-civic-progress.js';
 // wltk END
+/**
+ * Get the player id of the player that has built a wonder
+ *
+ * @param wonderType The string type name or hash of the wonder
+ */
+const getWonderPlayerId = (wonderType) => {
+    wonderType = typeof wonderType == 'string' ? Database.makeHash(wonderType) : wonderType;
+    const players = Players.getEverAlive();
+    for (const player of players) {
+        const wonders = player.Constructibles?.getWonders(player.id);
+        if (!wonders)
+            continue;
+        for (const wonder of wonders) {
+            const constructible = Constructibles.getByComponentID(wonder);
+            if (constructible?.type === wonderType && constructible?.complete) {
+                return player.id;
+            }
+        }
+    }
+    return null;
+};
 class TechCivicTooltipType {
     constructor(model) {
         this.fragment = document.createDocumentFragment();
@@ -97,12 +118,31 @@ class TechCivicTooltipType {
                 unlockItemIcon.appendChild(unlockItemIconImg);
                 const unlockItemContent = document.createElement("div");
                 unlockItemContent.classList.add("unlock-item-content", "text-xs");
+                const unlockNameLine = document.createElement('div');
+                unlockNameLine.classList.add('flex');
                 const unlockItemName = document.createElement("div");
                 unlockItemName.classList.add("unlock-item-name");
                 unlockItemName.innerHTML = unlock.name;
+                unlockNameLine.appendChild(unlockItemName);
+                if (unlock.kind === "KIND_CONSTRUCTIBLE") {
+                    const constructible = GameInfo.Constructibles.lookup(unlock.type);
+                    if (constructible) {
+                        const classTypeHash = Database.makeHash(constructible.ConstructibleClass);
+                        if (classTypeHash === ConstructibleClasses.WONDER) {
+                            const owningPlayerId = getWonderPlayerId(unlock.type);
+                            if (owningPlayerId != null) {
+                                const text = owningPlayerId === GameContext.localPlayerID ? "LOC_UI_TREE_WONDER_BUILT_BY_YOU" : "LOC_UI_TREE_WONDER_BUILT_BY_OTHER";
+                                const unlockItemNamePlayerBuildText = document.createElement("div");
+                                unlockItemNamePlayerBuildText.classList.add('ml-2', 'text-secondary', 'text-uppercase', 'text-xs', 'font-body', 'font-bold', 'tracking-25', 'flex', 'flex-auto');
+                                unlockItemNamePlayerBuildText.setAttribute("data-l10n-id", text);
+                                unlockNameLine.appendChild(unlockItemNamePlayerBuildText);
+                            }
+                        }
+                    }
+                }
                 const unlockItemDesc = document.createElement("div");
                 unlockItemDesc.innerHTML = unlock.description;
-                unlockItemContent.appendChild(unlockItemName);
+                unlockItemContent.appendChild(unlockNameLine);
                 unlockItemContent.appendChild(unlockItemDesc);
                 unlockItem.appendChild(unlockItemIcon);
                 unlockItem.appendChild(unlockItemContent);
@@ -219,8 +259,8 @@ class TreeTooltipType {
             return;
         }
         const depth = node.unlocksByDepth[index];
-        stateText.textContent = TreeNodesSupport.getUnlocksByDepthStateText(depth);
         if (depth) {
+            stateText.textContent = TreeNodesSupport.getUnlocksByDepthStateText(depth);
             depth.unlocks.forEach(unlock => {
                 const unlockItem = document.createElement("div");
                 unlockItem.classList.add("unlock-item");
@@ -235,12 +275,31 @@ class TreeTooltipType {
                 unlockItemIcon.appendChild(unlockItemIconImg);
                 const unlockItemContent = document.createElement("div");
                 unlockItemContent.classList.add("unlock-item-content", "text-xs");
+                const unlockNameLine = document.createElement('div');
+                unlockNameLine.classList.add('flex');
                 const unlockItemName = document.createElement("div");
                 unlockItemName.classList.add("unlock-item-name");
                 unlockItemName.innerHTML = unlock.name;
+                unlockNameLine.appendChild(unlockItemName);
+                if (unlock.kind === "KIND_CONSTRUCTIBLE") {
+                    const constructible = GameInfo.Constructibles.lookup(unlock.type);
+                    if (constructible) {
+                        const classTypeHash = Database.makeHash(constructible.ConstructibleClass);
+                        if (classTypeHash === ConstructibleClasses.WONDER) {
+                            const owningPlayerId = getWonderPlayerId(unlock.type);
+                            if (owningPlayerId != null) {
+                                const text = owningPlayerId === GameContext.localPlayerID ? "LOC_UI_TREE_WONDER_BUILT_BY_YOU" : "LOC_UI_TREE_WONDER_BUILT_BY_OTHER";
+                                const unlockItemNamePlayerBuildText = document.createElement("div");
+                                unlockItemNamePlayerBuildText.classList.add('ml-2', 'text-secondary', 'text-uppercase', 'text-xs', 'font-body', 'font-bold', 'tracking-25', 'flex', 'flex-auto');
+                                unlockItemNamePlayerBuildText.setAttribute("data-l10n-id", text);
+                                unlockNameLine.appendChild(unlockItemNamePlayerBuildText);
+                            }
+                        }
+                    }
+                }
                 const unlockItemDesc = document.createElement("div");
                 unlockItemDesc.innerHTML = unlock.description;
-                unlockItemContent.appendChild(unlockItemName);
+                unlockItemContent.appendChild(unlockNameLine);
                 unlockItemContent.appendChild(unlockItemDesc);
                 unlockItem.appendChild(unlockItemIcon);
                 unlockItem.appendChild(unlockItemContent);
@@ -258,5 +317,4 @@ TooltipManager.registerType('tech', new TechCivicTooltipType(TechTreeChooser));
 TooltipManager.registerType('culture', new TechCivicTooltipType(CultureTreeChooser));
 TooltipManager.registerType('culture-tree', new TreeTooltipType(CultureTree));
 TooltipManager.registerType('tech-tree', new TreeTooltipType(TechTree));
-
 //# sourceMappingURL=file:///base-standard/ui/tooltips/tech-civic-tooltip.js.map
